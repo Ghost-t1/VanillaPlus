@@ -2,21 +2,37 @@ package GhostyPlugin;
 
 import GhostyPlugin.Modules.ArmorReseter;
 import GhostyPlugin.Modules.DirtUpdater;
+import GhostyPlugin.Modules.FrogFeeder;
+import GhostyPlugin.Modules.ToolStats;
+import GhostyPlugin.Modules.WoodStonecutter;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import static GhostyPlugin.Information.Prefix;
 
 public class MainLoader extends JavaPlugin {
 
+    private ConfigManager Config;
+
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(new ArmorReseter(), this);
+        Config = new ConfigManager(this);
+
+        getServer().getPluginManager().registerEvents(new ArmorReseter(Config), this);
         getServer().getPluginManager().registerEvents(new DirtUpdater(), this);
-        getLogger().info(Prefix + "Got it and loaded!");
+
+        if (Config.IsFrogFeederEnabled()) {
+            getServer().getPluginManager().registerEvents(new FrogFeeder(this, Config), this);
+        }
+
+        if (Config.IsToolStatsEnabled()) {
+            getServer().getPluginManager().registerEvents(new ToolStats(this, Config), this);
+        }
+
+        if (Config.IsWoodStonecutterEnabled()) {
+            WoodStonecutter.RegisterRecipes(this, Config);
+        }
     }
 
     @Override
     public void onDisable() {
-        getLogger().info(Prefix + "Got it and unloaded!");
     }
+
 }

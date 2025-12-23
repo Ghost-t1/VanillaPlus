@@ -1,5 +1,6 @@
 package GhostyPlugin.Modules;
 
+import GhostyPlugin.ConfigManager;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -22,23 +23,19 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-// I Don't want to change code again :((
-
 public class ArmorReseter implements Listener {
 
     private static final Random Random = new Random();
-
-    private static final double AnvilDamageChance = 0.12;
-
-    private static final double ArmorBreakChance = 0.5;
-    private static final int MinDurabilityLossPercent = 3;
-    private static final int MaxDurabilityLossPercent = 14;
-
+    private final ConfigManager Config;
     private final Map<UUID, Block> PlayerAnvilInteractions = new HashMap<>();
+
+    public ArmorReseter(ConfigManager Config) {
+        this.Config = Config;
+    }
 
     @EventHandler
     public void OnAnvilPrepare(PrepareAnvilEvent Event) {
-        ItemStack[] Items = {Event.getInventory().getFirstItem(), Event.getInventory().getSecondItem()};
+        ItemStack[] Items = { Event.getInventory().getFirstItem(), Event.getInventory().getSecondItem() };
 
         if (!IsValidArmorReset(Items[0], Items[1])) {
             return;
@@ -57,7 +54,7 @@ public class ArmorReseter implements Listener {
 
         Player Player = (Player) Event.getWhoClicked();
         AnvilInventory AnvilInventory = (AnvilInventory) Event.getInventory();
-        ItemStack[] Items = {AnvilInventory.getFirstItem(), AnvilInventory.getSecondItem()};
+        ItemStack[] Items = { AnvilInventory.getFirstItem(), AnvilInventory.getSecondItem() };
 
         if (!IsValidArmorReset(Items[0], Items[1])) {
             return;
@@ -70,7 +67,7 @@ public class ArmorReseter implements Listener {
 
         Items[1].setAmount(Items[1].getAmount() - 1);
 
-        if (Random.nextDouble() <= ArmorBreakChance) {
+        if (Random.nextDouble() <= Config.GetArmorBreakChance()) {
             ItemStack DamagedItem = CreateResetArmorItem(Items[0]);
             DamageArmorItem(DamagedItem);
             Player.getInventory().addItem(DamagedItem);
@@ -83,7 +80,7 @@ public class ArmorReseter implements Listener {
         }
 
         Block AnvilBlock = PlayerAnvilInteractions.get(Player.getUniqueId());
-        if (Random.nextDouble() <= AnvilDamageChance && AnvilBlock != null) {
+        if (Random.nextDouble() <= Config.GetAnvilDamageChance() && AnvilBlock != null) {
             DamageAnvil(AnvilBlock);
             Player.playSound(Player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 0.7f, 1.0f);
         }
@@ -97,10 +94,9 @@ public class ArmorReseter implements Listener {
     @EventHandler
     public void OnPlayerInteract(PlayerInteractEvent Event) {
         Player Player = Event.getPlayer();
-        if (Event.getClickedBlock() != null && (
-                Event.getClickedBlock().getType() == Material.ANVIL ||
-                        Event.getClickedBlock().getType() == Material.CHIPPED_ANVIL ||
-                        Event.getClickedBlock().getType() == Material.DAMAGED_ANVIL)) {
+        if (Event.getClickedBlock() != null && (Event.getClickedBlock().getType() == Material.ANVIL ||
+                Event.getClickedBlock().getType() == Material.CHIPPED_ANVIL ||
+                Event.getClickedBlock().getType() == Material.DAMAGED_ANVIL)) {
             PlayerAnvilInteractions.put(Player.getUniqueId(), Event.getClickedBlock());
         }
     }
@@ -129,7 +125,8 @@ public class ArmorReseter implements Listener {
         if (BlockType == Material.ANVIL) {
 
             org.bukkit.block.data.Directional Directional = (org.bukkit.block.data.Directional) Block.getBlockData();
-            org.bukkit.block.data.Directional NewDirectional = (org.bukkit.block.data.Directional) Material.CHIPPED_ANVIL.createBlockData();
+            org.bukkit.block.data.Directional NewDirectional = (org.bukkit.block.data.Directional) Material.CHIPPED_ANVIL
+                    .createBlockData();
             NewDirectional.setFacing(Directional.getFacing());
 
             Block.setType(Material.CHIPPED_ANVIL);
@@ -137,7 +134,8 @@ public class ArmorReseter implements Listener {
         } else if (BlockType == Material.CHIPPED_ANVIL) {
 
             org.bukkit.block.data.Directional Directional = (org.bukkit.block.data.Directional) Block.getBlockData();
-            org.bukkit.block.data.Directional NewDirectional = (org.bukkit.block.data.Directional) Material.DAMAGED_ANVIL.createBlockData();
+            org.bukkit.block.data.Directional NewDirectional = (org.bukkit.block.data.Directional) Material.DAMAGED_ANVIL
+                    .createBlockData();
             NewDirectional.setFacing(Directional.getFacing());
 
             Block.setType(Material.DAMAGED_ANVIL);
@@ -179,7 +177,10 @@ public class ArmorReseter implements Listener {
             int RemainingDurability = MaxDurability - CurrentDamage;
 
             if (RemainingDurability > 0) {
-                int DurabilityLossPercent = MinDurabilityLossPercent + Random.nextInt(MaxDurabilityLossPercent - MinDurabilityLossPercent + 1);
+                int MinPerc = Config.GetMinDurabilityLoss();
+                int MaxPerc = Config.GetMaxDurabilityLoss();
+
+                int DurabilityLossPercent = MinPerc + Random.nextInt(MaxPerc - MinPerc + 1);
                 int DurabilityLoss = (RemainingDurability * DurabilityLossPercent) / 100;
 
                 Damageable.setDamage(CurrentDamage + DurabilityLoss);

@@ -1,0 +1,83 @@
+frog-feeder:
+  enabled: true
+  cooldown: 0
+  grumpy-chance: 0.2
+  grumpy-chance: 0.2
+
+armor-reseter:
+  enabled: true
+  anvil-damage-chance: 0.12
+  armor-break-chance: 0.5
+  min-durability-loss: 3
+  max-durability-loss: 14
+
+tool-stats:
+  enabled: true
+  labels:
+    mined-pickaxe: "Добыто"
+    mined-axe: "Срублено"
+    mined-shovel: "Вскопано"
+    mined-hoe: "Собрано"
+    killed: "Убито"
+    killed-mace: "Сокрушено" # Anything what you want
+    killed-stick: "Наказано" # Like killed-stone: "Задавлено"
+  
+  tracking:
+    pickaxe:
+      blocks: true
+      kills: false
+    axe:
+      blocks: true
+      kills: true
+    shovel:
+      blocks: true
+      kills: false
+    hoe:
+      blocks: true
+      kills: false
+    sword:
+      blocks: false
+      kills: true
+    mace:
+      blocks: false
+      kills: true
+    stick:
+      blocks: false
+      kills: true
+
+wood-stonecutter:
+  enabled: true
+  recipes:
+    planks-to-stairs:
+      input-count: 1
+      output-count: 1
+    planks-to-slabs:
+      input-count: 1
+      output-count: 1
+    planks-to-fence:
+      input-count: 1
+      output-count: 1
+    planks-to-fence-gate:
+      input-count: 1
+      output-count: 1
+    planks-to-door:
+      input-count: 2
+      output-count: 1
+    planks-to-trapdoor:
+      input-count: 1
+      output-count: 1
+    planks-to-button:
+      input-count: 1
+      output-count: 4
+    planks-to-pressure-plate:
+      input-count: 1
+      output-count: 1
+    log-to-planks:
+      input-count: 1
+      output-count: 4
+    log-to-stripped:
+      input-count: 1
+      output-count: 1
+    wood-to-stripped:
+      input-count: 1
+      output-count: 1

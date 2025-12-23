@@ -1,5 +1,6 @@
 name: GhostyPlugin
-version: '0.7'
+version: '1.0'
 main: GhostyPlugin.MainLoader
-api-version: '1.20'
-description: 'А?'
+api-version: 1.21
+authors: [Ghosty]
+description: Vanilla+.
