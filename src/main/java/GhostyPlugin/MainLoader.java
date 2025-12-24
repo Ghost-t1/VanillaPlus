@@ -29,10 +29,13 @@ public class MainLoader extends JavaPlugin {
         if (Config.IsWoodStonecutterEnabled()) {
             WoodStonecutter.RegisterRecipes(this, Config);
         }
+
+        getCommand("vanillaplus").setExecutor(new GhostyPlugin.Commands.VanillaPlusCommand(Config));
+        getCommand("togglestats").setExecutor(new GhostyPlugin.Commands.ToggleStatsCommand(this));
+        getCommand("clearstats").setExecutor(new GhostyPlugin.Commands.ClearStatsCommand(this));
     }
 
     @Override
     public void onDisable() {
     }
-
 }

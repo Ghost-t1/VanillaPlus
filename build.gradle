@@ -3,8 +3,7 @@ plugins {
     id 'xyz.jpenilla.run-paper' version '2.3.1'
 }
 
-group = 'TestPlugin'
-version = '1.0'
+group = 'VanillaPlus'
 
 repositories {
     mavenCentral()
@@ -53,6 +52,9 @@ processResources {
 }
 
 tasks {
+    jar {
+        archiveFileName = 'VanillaPlus.jar'
+    }
     runServer {
         minecraftVersion("1.21")
     }

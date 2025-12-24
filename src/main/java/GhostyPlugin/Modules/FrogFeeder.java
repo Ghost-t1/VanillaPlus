@@ -1,6 +1,7 @@
 package GhostyPlugin.Modules;
 
 import GhostyPlugin.ConfigManager;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,20 +18,70 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 public class FrogFeeder implements Listener {
 
+    private final JavaPlugin PluginInstance;
     private final ConfigManager Config;
-    private final NamespacedKey GrumpyKey;
+    private final NamespacedKey AngryKey;
+    private final NamespacedKey NextParticleTimeKey;
     private final Map<UUID, Long> Cooldowns = new HashMap<>();
+    private final Random RandomGenerator = new Random();
 
     public FrogFeeder(JavaPlugin Plugin, ConfigManager Config) {
+        this.PluginInstance = Plugin;
         this.Config = Config;
-        this.GrumpyKey = new NamespacedKey(Plugin, "is_grumpy");
+        this.AngryKey = new NamespacedKey(Plugin, "is_angry");
+        this.NextParticleTimeKey = new NamespacedKey(Plugin, "next_particle_time");
+        StartParticleTask();
+    }
+
+    private void StartParticleTask() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                long CurrentTime = System.currentTimeMillis();
+
+                for (org.bukkit.World World : Bukkit.getWorlds()) {
+                    for (Frog FrogEntity : World.getEntitiesByClass(Frog.class)) {
+                        PersistentDataContainer Data = FrogEntity.getPersistentDataContainer();
+                        Integer AngryState = Data.get(AngryKey, PersistentDataType.INTEGER);
+
+                        if (AngryState == null) {
+                            continue;
+                        }
+
+                        Long NextParticleTime = Data.get(NextParticleTimeKey, PersistentDataType.LONG);
+                        if (NextParticleTime == null || CurrentTime >= NextParticleTime) {
+                            Location Loc = FrogEntity.getLocation().add(0, 0.5, 0);
+
+                            int MinSeconds;
+                            int MaxSeconds;
+
+                            if (AngryState == 1) {
+                                Loc.getWorld().spawnParticle(Particle.ANGRY_VILLAGER, Loc, 1, 0.2, 0.2, 0.2, 0.0);
+                                MinSeconds = Config.GetFrogAngryMin();
+                                MaxSeconds = Config.GetFrogAngryMax();
+                            } else {
+                                Loc.getWorld().spawnParticle(Particle.HEART, Loc, 1, 0.2, 0.2, 0.2, 0.0);
+                                MinSeconds = Config.GetFrogFriendlyMin();
+                                MaxSeconds = Config.GetFrogFriendlyMax();
+                            }
+
+                            int RandomSeconds = MinSeconds + RandomGenerator.nextInt(MaxSeconds - MinSeconds + 1);
+                            long NextTime = CurrentTime + (RandomSeconds * 1000L);
+                            Data.set(NextParticleTimeKey, PersistentDataType.LONG, NextTime);
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(PluginInstance, 20L, 20L);
     }
 
     @EventHandler
@@ -49,15 +100,30 @@ public class FrogFeeder implements Listener {
         Frog FrogEntity = (Frog) Event.getRightClicked();
 
         PersistentDataContainer Data = FrogEntity.getPersistentDataContainer();
-        Integer GrumpyState = Data.get(GrumpyKey, PersistentDataType.INTEGER);
+        Integer AngryState = Data.get(AngryKey, PersistentDataType.INTEGER);
 
-        if (GrumpyState == null) {
-            boolean IsGrumpy = Math.random() < Config.GetFrogGrumpyChance();
-            GrumpyState = IsGrumpy ? 1 : 0;
-            Data.set(GrumpyKey, PersistentDataType.INTEGER, GrumpyState);
+        if (AngryState == null) {
+            boolean IsAngry = Math.random() < Config.GetFrogAngryChance();
+            AngryState = IsAngry ? 1 : 0;
+            Data.set(AngryKey, PersistentDataType.INTEGER, AngryState);
+
+            int MinSeconds;
+            int MaxSeconds;
+
+            if (AngryState == 1) {
+                MinSeconds = Config.GetFrogAngryMin();
+                MaxSeconds = Config.GetFrogAngryMax();
+            } else {
+                MinSeconds = Config.GetFrogFriendlyMin();
+                MaxSeconds = Config.GetFrogFriendlyMax();
+            }
+
+            int RandomSeconds = MinSeconds + RandomGenerator.nextInt(MaxSeconds - MinSeconds + 1);
+            long NextTime = System.currentTimeMillis() + (RandomSeconds * 1000L);
+            Data.set(NextParticleTimeKey, PersistentDataType.LONG, NextTime);
         }
 
-        if (GrumpyState == 1) {
+        if (AngryState == 1) {
             Location Loc = FrogEntity.getLocation();
             Loc.getWorld().playSound(Loc, Sound.ENTITY_FROG_DEATH, 1.0f, 0.5f);
             Loc.getWorld().spawnParticle(Particle.ANGRY_VILLAGER, Loc.add(0, 0.5, 0), 5, 0.3, 0.3, 0.3, 0.0);

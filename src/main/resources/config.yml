@@ -1,8 +1,11 @@
 frog-feeder:
   enabled: true
-  cooldown: 0
-  grumpy-chance: 0.2
-  grumpy-chance: 0.2
+  cooldown: 1
+  angry-chance: 0.2
+  angry-min: 10
+  angry-max: 25
+  friendly-min: 15
+  friendly-max: 30
 
 armor-reseter:
   enabled: true
@@ -13,71 +16,94 @@ armor-reseter:
 
 tool-stats:
   enabled: true
-  labels:
-    mined-pickaxe: "Добыто"
-    mined-axe: "Срублено"
-    mined-shovel: "Вскопано"
-    mined-hoe: "Собрано"
-    killed: "Убито"
-    killed-mace: "Сокрушено" # Anything what you want
-    killed-stick: "Наказано" # Like killed-stone: "Задавлено"
   
-  tracking:
-    pickaxe:
-      blocks: true
-      kills: false
-    axe:
-      blocks: true
-      kills: true
-    shovel:
-      blocks: true
-      kills: false
-    hoe:
-      blocks: true
-      kills: false
-    sword:
-      blocks: false
-      kills: true
-    mace:
-      blocks: false
-      kills: true
-    stick:
-      blocks: false
-      kills: true
+  # Доступные плейсхолдеры для инструментов и оружия:
+  # %blocks% - количество добытых блоков
+  # %kills% - количество убитых мобов
+  # %maxdamage% - максимальный урон за один удар
+  # %alldamage% - весь нанесенный урон
+  # %oneshots% - количество ваншотов
+  # %shots% - количество выпущенных снарядов
+  # %distance% - пролетная дистанция в метрах
+  # %xp_spent% - потраченный опыт на починку
+  # %full_repairs% - количество полных починок до максимума
+  
+  # Доступные плейсхолдеры для брони:
+  # %hits% - количество полученных ударов
+  # %absorbed% - поглощенный урон
+  # %reflected% - отраженный урон
+  
+  # Доступные плейсхолдеры для щита:
+  # %blocked_hits% - количество заблокированных ударов
+  # %blocked_damage% - заблокированный урон
+  
+  # Пример конфигурации:
+  # info-pickaxe, info-axe, info-shovel, info-hoe, info-sword, info-mace, 
+  # info-stick, info-bow, info-crossbow, info-elytra, info-shield,
+  # info-helmet, info-chestplate, info-leggings, info-boots
+  
+  info-pickaxe:
+    enabled: true
+    lines:
+      - "Вот так делай ЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫ"
+      - "И вот так хз"
+  
+  info-axe:
+    enabled: true
+    lines:
+  
+  info-shovel:
+    enabled: true
+    lines:
+  
+  info-hoe:
+    enabled: true
+    lines:
+  
+  info-sword:
+    enabled: true
+    lines:
+  
+  info-mace:
+    enabled: true
+    lines:
+  
+  info-stick:
+    enabled: true
+    lines:
+  
+  info-bow:
+    enabled: true
+    lines:
+  
+  info-crossbow:
+    enabled: true
+    lines:
+  
+  info-elytra:
+    enabled: true
+    lines:
+  
+  info-shield:
+    enabled: true
+    lines:
+  
+  info-helmet:
+    enabled: true
+    lines:
+  
+  info-chestplate:
+    enabled: true
+    lines:
+  
+  info-leggings:
+    enabled: true
+    lines:
+  
+  info-boots:
+    enabled: true
+    lines:
 
 wood-stonecutter:
   enabled: true
-  recipes:
-    planks-to-stairs:
-      input-count: 1
-      output-count: 1
-    planks-to-slabs:
-      input-count: 1
-      output-count: 1
-    planks-to-fence:
-      input-count: 1
-      output-count: 1
-    planks-to-fence-gate:
-      input-count: 1
-      output-count: 1
-    planks-to-door:
-      input-count: 2
-      output-count: 1
-    planks-to-trapdoor:
-      input-count: 1
-      output-count: 1
-    planks-to-button:
-      input-count: 1
-      output-count: 4
-    planks-to-pressure-plate:
-      input-count: 1
-      output-count: 1
-    log-to-planks:
-      input-count: 1
-      output-count: 4
-    log-to-stripped:
-      input-count: 1
-      output-count: 1
-    wood-to-stripped:
-      input-count: 1
-      output-count: 1
+

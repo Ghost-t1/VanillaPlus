@@ -1,10 +1,8 @@
 package GhostyPlugin;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ConfigManager {
 
@@ -14,8 +12,6 @@ public class ConfigManager {
     private boolean FrogFeederEnabled;
     private boolean ToolStatsEnabled;
     private boolean WoodStonecutterEnabled;
-
-    private final Map<String, RecipeConfig> WoodRecipes = new HashMap<>();
 
     public ConfigManager(JavaPlugin Plugin) {
         this.PluginInstance = Plugin;
@@ -30,26 +26,12 @@ public class ConfigManager {
         FrogFeederEnabled = Config.getBoolean("frog-feeder.enabled", true);
         ToolStatsEnabled = Config.getBoolean("tool-stats.enabled", true);
         WoodStonecutterEnabled = Config.getBoolean("wood-stonecutter.enabled", true);
-
-        LoadWoodRecipes();
     }
 
-    private void LoadWoodRecipes() {
-        WoodRecipes.clear();
-
-        String BasePath = "wood-stonecutter.recipes.";
-        String[] RecipeKeys = {
-                "planks-to-stairs", "planks-to-slabs", "planks-to-fence",
-                "planks-to-fence-gate", "planks-to-door", "planks-to-trapdoor",
-                "planks-to-button", "planks-to-pressure-plate", "log-to-planks",
-                "log-to-stripped", "wood-to-stripped"
-        };
-
-        for (String Key : RecipeKeys) {
-            int InputCount = Config.getInt(BasePath + Key + ".input-count", 1);
-            int OutputCount = Config.getInt(BasePath + Key + ".output-count", 1);
-            WoodRecipes.put(Key, new RecipeConfig(InputCount, OutputCount));
-        }
+    public void SetToolStatsEnabled(boolean Enabled) {
+        ToolStatsEnabled = Enabled;
+        Config.set("tool-stats.enabled", Enabled);
+        PluginInstance.saveConfig();
     }
 
     public boolean IsFrogFeederEnabled() {
@@ -60,11 +42,25 @@ public class ConfigManager {
         return Config.getInt("frog-feeder.cooldown", 0);
     }
 
-    public double GetFrogGrumpyChance() {
-        return Config.getDouble("frog-feeder.grumpy-chance", 0.2);
+    public double GetFrogAngryChance() {
+        return Config.getDouble("frog-feeder.angry-chance", 0.2);
     }
 
-    // ArmorReseter
+    public int GetFrogAngryMin() {
+        return Config.getInt("frog-feeder.angry-min", 10);
+    }
+
+    public int GetFrogAngryMax() {
+        return Config.getInt("frog-feeder.angry-max", 25);
+    }
+
+    public int GetFrogFriendlyMin() {
+        return Config.getInt("frog-feeder.friendly-min", 15);
+    }
+
+    public int GetFrogFriendlyMax() {
+        return Config.getInt("frog-feeder.friendly-max", 30);
+    }
 
     public double GetAnvilDamageChance() {
         return Config.getDouble("armor-reseter.anvil-damage-chance", 0.12);
@@ -90,33 +86,11 @@ public class ConfigManager {
         return WoodStonecutterEnabled;
     }
 
-    public RecipeConfig GetRecipeConfig(String RecipeKey) {
-        return WoodRecipes.getOrDefault(RecipeKey, new RecipeConfig(1, 1));
+    public boolean IsToolInfoEnabled(String ToolType) {
+        return Config.getBoolean("tool-stats.info-" + ToolType + ".enabled", false);
     }
 
-    public String GetToolLabel(String Key) {
-        return Config.getString("tool-stats.labels." + Key, "Stat");
-    }
-
-    public boolean ShouldTrack(String ToolType, String Metric) {
-        return Config.getBoolean("tool-stats.tracking." + ToolType + "." + Metric, false);
-    }
-
-    public static class RecipeConfig {
-        private final int InputCount;
-        private final int OutputCount;
-
-        public RecipeConfig(int InputCount, int OutputCount) {
-            this.InputCount = InputCount;
-            this.OutputCount = OutputCount;
-        }
-
-        public int GetInputCount() {
-            return InputCount;
-        }
-
-        public int GetOutputCount() {
-            return OutputCount;
-        }
+    public java.util.List<String> GetToolInfoLines(String ToolType) {
+        return Config.getStringList("tool-stats.info-" + ToolType + ".lines");
     }
 }

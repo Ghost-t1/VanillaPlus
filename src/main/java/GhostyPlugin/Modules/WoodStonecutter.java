@@ -18,84 +18,96 @@ public class WoodStonecutter {
 
     public static void RegisterRecipes(JavaPlugin Plugin, ConfigManager Config) {
         for (String WoodType : WoodTypes) {
-            RegisterWoodRecipes(Plugin, Config, WoodType);
+            RegisterWoodRecipes(Plugin, WoodType);
         }
     }
 
-    private static void RegisterWoodRecipes(JavaPlugin Plugin, ConfigManager Config, String WoodType) {
+    private static void RegisterWoodRecipes(JavaPlugin Plugin, String WoodType) {
         String PlanksName = WoodType + "_PLANKS";
-        String LogName = WoodType + "_LOG";
-        String StrippedLogName = "STRIPPED_" + LogName;
-        String WoodName = WoodType + "_WOOD";
-        String StrippedWoodName = "STRIPPED_" + WoodName;
+        String LogName;
+        String StrippedLogName;
+        String WoodName;
+        String StrippedWoodName;
+
+        if (WoodType.equals("CRIMSON") || WoodType.equals("WARPED")) {
+            LogName = WoodType + "_STEM";
+            StrippedLogName = "STRIPPED_" + WoodType + "_STEM";
+            WoodName = WoodType + "_HYPHAE";
+            StrippedWoodName = "STRIPPED_" + WoodType + "_HYPHAE";
+        } else if (WoodType.equals("BAMBOO")) {
+            LogName = "BAMBOO_BLOCK";
+            StrippedLogName = "STRIPPED_BAMBOO_BLOCK";
+            WoodName = null;
+            StrippedWoodName = null;
+        } else {
+            LogName = WoodType + "_LOG";
+            StrippedLogName = "STRIPPED_" + LogName;
+            WoodName = WoodType + "_WOOD";
+            StrippedWoodName = "STRIPPED_" + WoodName;
+        }
 
         Material Planks = Material.getMaterial(PlanksName);
         Material Log = Material.getMaterial(LogName);
         Material StrippedLog = Material.getMaterial(StrippedLogName);
-        Material Wood = Material.getMaterial(WoodName);
-        Material StrippedWood = Material.getMaterial(StrippedWoodName);
+        Material Wood = WoodName != null ? Material.getMaterial(WoodName) : null;
+        Material StrippedWood = StrippedWoodName != null ? Material.getMaterial(StrippedWoodName) : null;
 
         if (Planks == null) {
             return;
         }
 
-        RegisterIfExists(Plugin, Config, WoodType, "STAIRS", Planks, "planks-to-stairs");
-        RegisterIfExists(Plugin, Config, WoodType, "SLAB", Planks, "planks-to-slabs");
-        RegisterIfExists(Plugin, Config, WoodType, "FENCE", Planks, "planks-to-fence");
-        RegisterIfExists(Plugin, Config, WoodType, "FENCE_GATE", Planks, "planks-to-fence-gate");
-        RegisterIfExists(Plugin, Config, WoodType, "DOOR", Planks, "planks-to-door");
-        RegisterIfExists(Plugin, Config, WoodType, "TRAPDOOR", Planks, "planks-to-trapdoor");
-        RegisterIfExists(Plugin, Config, WoodType, "BUTTON", Planks, "planks-to-button");
-        RegisterIfExists(Plugin, Config, WoodType, "PRESSURE_PLATE", Planks, "planks-to-pressure-plate");
+        RegisterIfExists(Plugin, WoodType, "STAIRS", Planks, 2);
+        RegisterIfExists(Plugin, WoodType, "SLAB", Planks, 1);
+        RegisterIfExists(Plugin, WoodType, "FENCE", Planks, 1);
+        RegisterIfExists(Plugin, WoodType, "FENCE_GATE", Planks, 1);
+        RegisterIfExists(Plugin, WoodType, "DOOR", Planks, 2);
+        RegisterIfExists(Plugin, WoodType, "TRAPDOOR", Planks, 2);
+        RegisterIfExists(Plugin, WoodType, "BUTTON", Planks, 4);
+        RegisterIfExists(Plugin, WoodType, "PRESSURE_PLATE", Planks, 2);
 
         if (Log != null) {
-            ConfigManager.RecipeConfig RecipeConf = Config.GetRecipeConfig("log-to-planks");
             RegisterStonecuttingRecipe(
                     Plugin,
                     "stonecutter_" + WoodType.toLowerCase() + "_planks_from_log",
-                    new ItemStack(Planks, RecipeConf.GetOutputCount()),
+                    new ItemStack(Planks, 4),
                     Log);
         }
 
         if (StrippedLog != null) {
-            ConfigManager.RecipeConfig RecipeConf = Config.GetRecipeConfig("log-to-planks");
             RegisterStonecuttingRecipe(
                     Plugin,
                     "stonecutter_" + WoodType.toLowerCase() + "_planks_from_stripped_log",
-                    new ItemStack(Planks, RecipeConf.GetOutputCount()),
+                    new ItemStack(Planks, 4),
                     StrippedLog);
         }
 
         if (Log != null && StrippedLog != null) {
-            ConfigManager.RecipeConfig RecipeConf = Config.GetRecipeConfig("log-to-stripped");
             RegisterStonecuttingRecipe(
                     Plugin,
                     "stonecutter_" + WoodType.toLowerCase() + "_stripped_log",
-                    new ItemStack(StrippedLog, RecipeConf.GetOutputCount()),
+                    new ItemStack(StrippedLog, 1),
                     Log);
         }
 
         if (Wood != null && StrippedWood != null) {
-            ConfigManager.RecipeConfig RecipeConf = Config.GetRecipeConfig("wood-to-stripped");
             RegisterStonecuttingRecipe(
                     Plugin,
                     "stonecutter_" + WoodType.toLowerCase() + "_stripped_wood",
-                    new ItemStack(StrippedWood, RecipeConf.GetOutputCount()),
+                    new ItemStack(StrippedWood, 1),
                     Wood);
         }
     }
 
-    private static void RegisterIfExists(JavaPlugin Plugin, ConfigManager Config, String WoodType, String Suffix,
-            Material Input, String ConfigKey) {
+    private static void RegisterIfExists(JavaPlugin Plugin, String WoodType, String Suffix,
+            Material Input, int OutputCount) {
         String MaterialName = WoodType + "_" + Suffix;
         Material ResultMaterial = Material.getMaterial(MaterialName);
 
         if (ResultMaterial != null) {
-            ConfigManager.RecipeConfig RecipeConf = Config.GetRecipeConfig(ConfigKey);
             RegisterStonecuttingRecipe(
                     Plugin,
                     "stonecutter_" + WoodType.toLowerCase() + "_" + Suffix.toLowerCase(),
-                    new ItemStack(ResultMaterial, RecipeConf.GetOutputCount()),
+                    new ItemStack(ResultMaterial, OutputCount),
                     Input);
         }
     }
