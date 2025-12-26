@@ -1,21 +1,21 @@
-frog-feeder:
-  enabled: true
-  cooldown: 1
-  angry-chance: 0.2
-  angry-min: 10
-  angry-max: 25
-  friendly-min: 15
-  friendly-max: 30
+FrogFeeder:
+  Enabled: true
+  Cooldown: 1
+  AngryChance: 0.2
+  ParticleMin: 10
+  ParticleMax: 25
+  AprilFools: false
 
-armor-reseter:
-  enabled: true
-  anvil-damage-chance: 0.12
-  armor-break-chance: 0.5
-  min-durability-loss: 3
-  max-durability-loss: 14
+ArmorReseter:
+  Enabled: true
+  AnvilDamageChance: 0.12
+  ArmorBreakChance: 0.5
+  MinDurabilityLoss: 3
+  MaxDurabilityLoss: 14
 
-tool-stats:
-  enabled: true
+ToolStats:
+  Enabled: true
+  UpdateInterval: 2
   
   # Доступные плейсхолдеры для инструментов и оружия:
   # %blocks% - количество добытых блоков
@@ -37,73 +37,80 @@ tool-stats:
   # %blocked_hits% - количество заблокированных ударов
   # %blocked_damage% - заблокированный урон
   
-  # Пример конфигурации:
-  # info-pickaxe, info-axe, info-shovel, info-hoe, info-sword, info-mace, 
-  # info-stick, info-bow, info-crossbow, info-elytra, info-shield,
-  # info-helmet, info-chestplate, info-leggings, info-boots
+  InfoPickaxe:
+    Enabled: true
+    Lines:
   
-  info-pickaxe:
-    enabled: true
-    lines:
-      - "Вот так делай ЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫ"
-      - "И вот так хз"
+  InfoAxe:
+    Enabled: true
+    Lines:
   
-  info-axe:
-    enabled: true
-    lines:
+  InfoShovel:
+    Enabled: true
+    Lines:
   
-  info-shovel:
-    enabled: true
-    lines:
+  InfoHoe:
+    Enabled: true
+    Lines:
   
-  info-hoe:
-    enabled: true
-    lines:
+  InfoSword:
+    Enabled: true
+    Lines:
   
-  info-sword:
-    enabled: true
-    lines:
+  InfoMace:
+    Enabled: true
+    Lines:
   
-  info-mace:
-    enabled: true
-    lines:
+  InfoStick:
+    Enabled: true
+    Lines:
   
-  info-stick:
-    enabled: true
-    lines:
+  InfoBow:
+    Enabled: true
+    Lines:
   
-  info-bow:
-    enabled: true
-    lines:
+  InfoCrossbow:
+    Enabled: true
+    Lines:
   
-  info-crossbow:
-    enabled: true
-    lines:
+  InfoElytra:
+    Enabled: true
+    Lines:
   
-  info-elytra:
-    enabled: true
-    lines:
+  InfoShield:
+    Enabled: true
+    Lines:
   
-  info-shield:
-    enabled: true
-    lines:
+  InfoHelmet:
+    Enabled: true
+    Lines:
   
-  info-helmet:
-    enabled: true
-    lines:
+  InfoChestplate:
+    Enabled: true
+    Lines:
   
-  info-chestplate:
-    enabled: true
-    lines:
+  InfoLeggings:
+    Enabled: true
+    Lines:
   
-  info-leggings:
-    enabled: true
-    lines:
-  
-  info-boots:
-    enabled: true
-    lines:
+  InfoBoots:
+    Enabled: true
+    Lines:
 
-wood-stonecutter:
-  enabled: true
+WoodStonecutter:
+  Enabled: true
 
+FastLeafDecay:
+  Enabled: true
+  MaxLeaves: 20
+  MinDelayTicks: 2
+  MaxDelayTicks: 10
+
+ConcreteHardener:
+  Enabled: true
+  AmountPerLevel: 8
+  CooldownSeconds: 2
+
+OxidizeCopper:
+  Enabled: true
+  BottleAccelerationMultiplier: 20

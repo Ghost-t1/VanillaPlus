@@ -1,17 +1,17 @@
 name: VanillaPlus
-version: 1.1.2
-main: GhostyPlugin.MainLoader
+version: 1.6.1
+main: VanillaPlus.MainLoader
 api-version: 1.21
 authors: [Ghosty]
 description: None to see here.
 commands:
-  vanillaplus:
-    description: VanillaPlus plugin commands
-    usage: /vanillaplus <subcommand>
-    aliases: [vp]
   togglestats:
-    description: Toggle stats tracking on held item
-    usage: /togglestats
+    description: Toggle stats tracking
+    usage: /togglestats [item]
   clearstats:
-    description: Clear all stats from held item (requires confirmation)
+    description: Clear all stats from held item
     usage: /clearstats
+  vp:
+    description: Main command
+    usage: /vp <command> [args]
+    aliases: [vanillaplus]
